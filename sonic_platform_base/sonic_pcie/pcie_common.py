@@ -37,9 +37,9 @@ class PcieUtil(PcieBase):
     def get_pcie_device(self):
         pciDict = {}
         pciList = []
-        p1 = "^(\w+):(\w+)\.(\w)\s(.*)\s\(.*\)"
-        p2 = "^.*:.*:.*:(\w+)\s\(.*\)"
-        command1 = "sudo lspci"
+        p1 = "^(\w+):(\w+):(\w+)\.(\w)\s(.*)\s*\(*.*\)*"
+        p2 = "^.*:.*:.*:(\w+)\s*\(*.*\)*"
+        command1 = "sudo lspci -D"
         command2 = "sudo lspci -n"
         # run command 1
         proc1 = subprocess.Popen(command1, shell=True, stdout=subprocess.PIPE)
@@ -64,10 +64,10 @@ class PcieUtil(PcieBase):
                 match1 = re.search(p1, line1.strip())
                 match2 = re.search(p2, line2.strip())
                 if match1 and match2:
-                    Bus = match1.group(1)
-                    Dev = match1.group(2)
-                    Fn = match1.group(3)
-                    Name = match1.group(4)
+                    Bus = match1.group(2)
+                    Dev = match1.group(3)
+                    Fn = match1.group(4)
+                    Name = match1.group(5)
                     Id = match2.group(1)
                     pciDict["name"] = Name
                     pciDict["bus"] = Bus

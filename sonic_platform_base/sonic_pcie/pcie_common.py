@@ -64,11 +64,13 @@ class PcieUtil(PcieBase):
                 match1 = re.search(p1, line1.strip())
                 match2 = re.search(p2, line2.strip())
                 if match1 and match2:
+                    Domain = match1.group(1)
                     Bus = match1.group(2)
                     Dev = match1.group(3)
                     Fn = match1.group(4)
                     Name = match1.group(5)
                     Id = match2.group(1)
+                    pciDict["domain"] = Domain
                     pciDict["name"] = Name
                     pciDict["bus"] = Bus
                     pciDict["dev"] = Dev
@@ -89,18 +91,26 @@ class PcieUtil(PcieBase):
         curInfo = self.get_pcie_device()
         for item_conf in self.confInfo:
             flag = 0            
+	    if "domain" in item_conf:
+                domain_conf = item_conf["domain"]
+            else:
+                domain_conf = "0000"
             bus_conf = item_conf["bus"]
             dev_conf = item_conf["dev"]
             fn_conf = item_conf["fn"]
             name_conf = item_conf["name"]
             id_conf = item_conf["id"]
             for item_cur in curInfo:
+                if "domain" in item_cur:
+                    domain_cur = item_cur["domain"]
+                else:
+                    domain_cur = "0000"
                 bus_cur = item_cur["bus"]
                 dev_cur = item_cur["dev"]
                 fn_cur = item_cur["fn"]
                 name_cur = item_cur["name"]
                 id_cur = item_cur["id"]
-                if bus_cur == bus_conf and dev_cur == dev_conf and \
+                if domain_cur == domain_conf and bus_cur == bus_conf and dev_cur == dev_conf and \
                    fn_cur == fn_conf and name_cur == name_conf and \
                    id_cur == id_conf:
                    flag+=1
